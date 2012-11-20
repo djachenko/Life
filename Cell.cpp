@@ -4,8 +4,8 @@
 
 using namespace std;
 
-Cell::Cell(int value)
-:state(value)
+Cell::Cell()
+:state(0)
 {
 }
 

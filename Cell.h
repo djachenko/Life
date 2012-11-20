@@ -6,7 +6,7 @@ class Cell
 	private:
 		int state;
 	public:
-		Cell(int value = 0);
+		Cell();
 		Cell(const Cell & other);
 		~Cell();
 
