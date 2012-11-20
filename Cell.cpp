@@ -1,11 +1,15 @@
+#include <iostream>
+
 #include "Cell.h"
+
+using namespace std;
 
 Cell::Cell(int value)
 :state(value)
 {
 }
 
-Cell::Cell(Cell &other)
+Cell::Cell(const Cell &other)
 :state(other.state)
 {
 }
@@ -31,6 +35,28 @@ void Cell::update()
 		state++;
 
 		state%=4;
+	}
+}
+
+bool Cell::alive() const
+{
+	return 2==this->state;
+}
+
+bool Cell::dead() const
+{
+	return 0==this->state;
+}
+
+void Cell::print() const
+{
+	if (this->alive())
+	{
+		cout << "XX";
+	}
+	else
+	{
+		cout << "  ";
 	}
 }
 

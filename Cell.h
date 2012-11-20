@@ -7,12 +7,17 @@ class Cell
 		int state;
 	public:
 		Cell(int value = 0);
-		Cell(Cell & other);
+		Cell(const Cell & other);
 		~Cell();
 
 		void born();
 		void die();
 		void update();
+
+		bool alive() const;
+		bool dead() const;
+
+		void print() const;
 
 		int getState() const;
 		void changeState(const int action);
