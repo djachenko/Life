@@ -40,12 +40,12 @@ void Cell::update()
 
 bool Cell::alive() const
 {
-	return 2==this->state;
+	return 2==state || 3==state;
 }
 
 bool Cell::dead() const
 {
-	return 0==this->state;
+	return 0==state || 1==state;;
 }
 
 void Cell::print() const
