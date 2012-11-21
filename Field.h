@@ -20,6 +20,7 @@ class Field
 		virtual ~Field();
 
 		vector<Cell> & operator[](int i);
+		const vector<Cell> & operator[](int i) const;
 
 		void read(char * name=NULL);
 		void fread(char * name);//reading from file
