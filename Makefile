@@ -9,7 +9,8 @@ FIELD_TESTS = FieldTests
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h $(GTEST_DIR)/include/gtest/internal/*.h
 
-all : $(CELL_TESTS) $(FIELD_TESTS)
+all : $(CELL_TESTS)
+# $(FIELD_TESTS)
 
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
@@ -29,10 +30,13 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 
 
-CellTests.o : $(USER_DIR)/CellTests.cpp $(USER_DIR)/Cell.h $(USER_DIR)/Cell.cpp $(GTEST_HEADERS)
+Cell.o : $(USER_DIR)/Cell.cpp $(USER_DIR)/Cell.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Cell.cpp
 
-CellTests : CellTests.o gtest_main.a 
+CellTests.o : $(USER_DIR)/CellTests.cpp $(USER_DIR)/Cell.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/CellTests.cpp
+
+CellTests : Cell.o CellTests.o gtest_main.a 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -lpthread -o $@
 
 
@@ -46,4 +50,4 @@ FieldTests : FieldTests.o gtest_main.a
 
 
 clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
+	rm -f $(CELL_TESTS) $(FIELD_TESTS) gtest.a gtest_main.a *.o
