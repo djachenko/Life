@@ -50,13 +50,15 @@ bool Cell::dead() const
 
 void Cell::print() const
 {
+	//cout << "Cell::print()" << endl;
+
 	if (this->alive())
 	{
-		cout << "XX";
+		cout << "X";
 	}
 	else
 	{
-		cout << "  ";
+		cout << "O";
 	}
 }
 
