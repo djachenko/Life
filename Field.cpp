@@ -22,8 +22,15 @@ vector<Cell> & Field::operator[](int i)
 	return table[i];
 }
 
+const vector<Cell> & Field::operator[](int i) const
+{
+	return table[i];
+}
+
 void Field::read(char * name)
 {
+	//cout << "read" << endl;
+
 	if (name)
 	{
 		this->fread(name);
@@ -32,10 +39,20 @@ void Field::read(char * name)
 	{
 		this->sread();
 	}
+
+	for (int i=0; i<sizeX; i++)
+	{
+		for (int j=0; j<sizeY; j++)
+		{
+			(*this)[i][j].update();
+		}
+	}
 }
 
 void Field::fread(char * name)
 {
+	//cout << "fread" << endl;
+
 	ifstream input;
 
 	input.open(name);
@@ -53,12 +70,19 @@ void Field::fread(char * name)
 
 void Field::sread()
 {
+	//cout << "sread" << endl;
+
 	int x;
 	int y;
 
-	for ( ; cin.good(); )
+	for ( ; ; )
 	{
 		cin >> x >> y;
+
+		if (x==-1 && y==-1)
+		{
+			return;
+		}
 
 		(*this)[x][y].born();
 	}
@@ -66,13 +90,15 @@ void Field::sread()
 
 void Field::print() const
 {
+	//cout << "Field::print()" << endl;
+
 	for(int i=0; i<sizeX; i++)
 	{
 		for (int j=0; j<sizeY; j++)
 		{
-			field[i][j].print();
+			(*this)[i][j].print();
 		}
 
-		cout >> endl;
+		cout << endl;
 	}
 }
