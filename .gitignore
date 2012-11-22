@@ -5,3 +5,5 @@
 *.cbp
 *.exe
 *.depend
+bin
+*.layout
