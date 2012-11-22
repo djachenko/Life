@@ -1,20 +1,25 @@
 #ifndef Game_h
 #define Game_h
 
+
+#include <map>
+
 #include "Field.h"
 
 class Game
 {
 	private:
-		Field table;
+		Field field;
 		std::map<int, actions> rules;
 		std::string name;
+
+		void realRead(istream & input);
 	public:
 		Game();
 		Game(const Game & other);
 		virtual ~Game();
 
-		void read();
+		void read(char * name);
 		void tick(int n=1);
 		void dump() const;
 		void print() const;

@@ -26,9 +26,12 @@ class Field
 		void fread(istream & input);
 		void print() const;
 
+		int getSizeX() const;
+		int getSizeY() const;
+
 		int countNeighbours(int x, int y);
 
-		void resize(const int newY, const int newY);
+		void resize(const int newX, const int newY);
 };
 
 #endif //Field_h

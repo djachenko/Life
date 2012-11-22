@@ -4,6 +4,7 @@
 enum actions
 {
 	birth,
+	survival,
 	death
 };
 

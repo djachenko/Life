@@ -10,7 +10,7 @@ LIFE = Life
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h $(GTEST_DIR)/include/gtest/internal/*.h
 
-all : $(CELL_TESTS) $(FIELD_TESTS)
+all : $(CELL_TESTS) $(FIELD_TESTS) $(LIFE)
 
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
@@ -52,5 +52,17 @@ FieldTests : Field.o Cell.o FieldTests.o gtest_main.a
 
 
 
+Game.o : $(USER_DIR)/Game.cpp $(USER_DIR)/Game.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Game.cpp
+
+
+
+Life.o : $(USER_DIR)/Life.cpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Life.cpp
+
+Life : Life.o Game.o Field.o Cell.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -lpthread -o $@
+
+
 clean :
-	rm -f $(CELL_TESTS) $(FIELD_TESTS) gtest.a gtest_main.a *.o
+	rm -f $(CELL_TESTS) $(FIELD_TESTS) Life gtest.a gtest_main.a *.o

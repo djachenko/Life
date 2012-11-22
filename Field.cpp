@@ -88,6 +88,16 @@ void Field::print() const
 	}
 }
 
+int Field::getSizeX() const
+{
+	return sizeX;
+}
+
+int Field::getSizeY() const
+{
+	return sizeY;
+}
+
 int Field::countNeighbours(int x, int y)
 {
 	int result=0;
@@ -101,12 +111,15 @@ int Field::countNeighbours(int x, int y)
 				continue;
 			}
 
-			if ((*this)[(x+i+sizeX)%sizeX][(y+j+sizeY)%sizeY].alive())
+			if ( (*this)[ ( x + i + sizeX ) % sizeX ][ ( y + j + sizeY ) % sizeY ].alive())
 			{
+				cout << "++ " << ( x + i + sizeX ) % sizeX << ' ' << ( y + j + sizeY ) % sizeY << endl;
 				result++;
 			}
 		}
 	}
+
+	cout << "count " << x << ' ' << y << ' ' << result << endl;
 
 	return result;
 }
