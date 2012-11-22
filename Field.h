@@ -22,12 +22,13 @@ class Field
 		vector<Cell> & operator[](int i);
 		const vector<Cell> & operator[](int i) const;
 
-		void read(char * name=NULL);
-		void fread(char * name);//reading from file
-		void sread();//reading from stdin
+		void read(const char * name=NULL);
+		void fread(istream & input);
 		void print() const;
 
 		int countNeighbours(int x, int y);
+
+		void resize(const int newY, const int newY);
 };
 
 #endif //Field_h

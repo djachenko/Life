@@ -27,17 +27,21 @@ const vector<Cell> & Field::operator[](int i) const
 	return table[i];
 }
 
-void Field::read(char * name)
+void Field::read(const char * name)
 {
 	//cout << "read" << endl;
 
 	if (name)
 	{
-		this->fread(name);
+		ifstream input;
+
+		input.open(name);
+
+		this->fread(input);
 	}
 	else
 	{
-		this->sread();
+		this->fread(cin);
 	}
 
 	for (int i=0; i<sizeX; i++)
@@ -49,14 +53,8 @@ void Field::read(char * name)
 	}
 }
 
-void Field::fread(char * name)
+void Field::fread(istream & input)
 {
-	//cout << "fread" << endl;
-
-	ifstream input;
-
-	input.open(name);
-
 	int x;
 	int y;
 
@@ -64,27 +62,12 @@ void Field::fread(char * name)
 	{
 		input >> x >> y;
 
-		cout << "x: " << x << endl << "y: " << y << endl;
-
-		(*this)[x][y].born();
-	}
-}
-
-void Field::sread()
-{
-	//cout << "sread" << endl;
-
-	int x;
-	int y;
-
-	for ( ; ; )
-	{
-		cin >> x >> y;
-
-		if (x==-1 && y==-1)
+		if (-1==x && -1==y)
 		{
 			return;
 		}
+
+		cout << "x: " << x << endl << "y: " << y << endl;
 
 		(*this)[x][y].born();
 	}
@@ -103,4 +86,40 @@ void Field::print() const
 
 		cout << endl;
 	}
+}
+
+int Field::countNeighbours(int x, int y)
+{
+	int result=0;
+
+	for (int i=-1; i<=1; i++)
+	{
+		for (int j=-1; j<=1; j++)
+		{
+			if (0==i && 0==j)
+			{
+				continue;
+			}
+
+			if ((*this)[(x+i+sizeX)%sizeX][(y+j+sizeY)%sizeY].alive())
+			{
+				result++;
+			}
+		}
+	}
+
+	return result;
+}
+
+void Field::resize(const int newX, const int newY)
+{
+	table.resize(newX);
+
+	for (int i=0; i<newX; i++)
+	{
+		table[i].resize(newY);
+	}
+
+	sizeX=newX;
+	sizeY=newY;
 }
