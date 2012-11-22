@@ -2,7 +2,6 @@
 *.o
 *.out
 *.a
-*.cbp
 *.exe
 *.depend
 bin
