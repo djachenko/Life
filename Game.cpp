@@ -6,7 +6,7 @@
 using namespace std;
 
 Game::Game()
-:field(2,2)
+:field(3,3)
 {
 }
 
@@ -40,11 +40,11 @@ void Game::realRead(istream & input)
 	string str;
 
 	getline(input, str);//descriptor
-	
+
 	cout << "str: " << str << endl;
 
 //NAME
-	
+
 	input >> str;//#N
 
 	getline(input,name);
@@ -71,7 +71,7 @@ void Game::realRead(istream & input)
 		{
 			case 'B':
 				action=birth;
-				
+
 				break;
 			case 'S':
 				action=survival;
@@ -80,8 +80,8 @@ void Game::realRead(istream & input)
 			default:
 				if (c>='0' && c<='9')
 				{
-					rules[c-'0']=action;
-					cout << "c: " << c << ", action: " << rules[c-'0'] << endl;
+					rules[birth!=action][c-'0']=action;
+					cout << "c: " << c << ", action: " << rules[birth!=action][c-'0'] << endl;
 				}
 		}
 	}
@@ -90,9 +90,14 @@ void Game::realRead(istream & input)
 
 	for (int i=0; i<=9; i++)
 	{
-		if (rules.find(i)==rules.end())
+		if (rules[false].find(i)==rules[false].end())
 		{
-			rules[i]=death;
+			rules[false][i]=death;
+		}
+
+		if (rules[true].find(i)==rules[true].end())
+		{
+			rules[true][i]=death;
 		}
 	}
 
@@ -113,15 +118,15 @@ void Game::tick(int n)
 {
 	for ( ; n; n--)
 	{
-		cout << "n: " << n << endl;
+//		cout << "n: " << n << endl;
 
 		for (int i=0; i<field.getSizeX(); i++)
 		{
 			for (int j=0; j<field.getSizeY(); j++)
 			{
-				cout << i << ' ' << j << endl;
+	//			cout << i << ' ' << j << endl;
 
-				field[i][j].changeState( rules[ field.countNeighbours(i, j) ] );
+				field[i][j].changeState( rules[ field[i][j].alive() ][ field.countNeighbours(i, j) ] );
 			}
 		}
 

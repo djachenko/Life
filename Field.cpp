@@ -67,7 +67,7 @@ void Field::fread(istream & input)
 			return;
 		}
 
-		cout << "x: " << x << endl << "y: " << y << endl;
+//		cout << "x: " << x << endl << "y: " << y << endl;
 
 		(*this)[x][y].born();
 	}
@@ -113,7 +113,8 @@ int Field::countNeighbours(int x, int y)
 
 			if ( (*this)[ ( x + i + sizeX ) % sizeX ][ ( y + j + sizeY ) % sizeY ].alive())
 			{
-				cout << "++ " << ( x + i + sizeX ) % sizeX << ' ' << ( y + j + sizeY ) % sizeY << endl;
+//				cout << "++ " << ( x + i + sizeX ) % sizeX << ' ' << ( y + j + sizeY ) % sizeY << endl;
+//				cout << x+i << ' ' << y+j << '|' << x+i+sizeX << ' ' << y+j+sizeY << endl;
 				result++;
 			}
 		}

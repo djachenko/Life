@@ -76,12 +76,12 @@ void Cell::changeState(const actions action)
 	switch (action)
 	{
 		case birth:
-			cout << "birth" << endl;
+//			cout << "birth" << endl;
 
 			this->born();
 			break;
-		case death: 
-			cout << "death X_X" << endl;
+		case death:
+//			cout << "death X_X" << endl;
 
 			this->die();
 			break;

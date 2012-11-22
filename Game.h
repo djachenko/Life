@@ -10,7 +10,7 @@ class Game
 {
 	private:
 		Field field;
-		std::map<int, actions> rules;
+		std::map<bool, std::map<int, actions> > rules;
 		std::string name;
 
 		void realRead(istream & input);
