@@ -67,14 +67,15 @@ int Cell::getState() const
 	return state;
 }
 
-void Cell::changeState(const int action)
+void Cell::changeState(const actions action)
 {
 	switch (action)
 	{
-		case 1:
+		case birth:
 			this->born();
 			break;
-		case 2: this->die();
+		case death: 
+			this->die();
 			break;
 	}
 }

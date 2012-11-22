@@ -1,6 +1,12 @@
 #ifndef Cell_h
 #define Cell_h
 
+enum actions
+{
+	birth,
+	death
+};
+
 class Cell
 {
 	private:
@@ -20,7 +26,7 @@ class Cell
 		void print() const;
 
 		int getState() const;
-		void changeState(const int action);
+		void changeState(const actions action);
 };
 
 #endif //Cell_h

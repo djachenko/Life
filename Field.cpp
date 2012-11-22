@@ -64,6 +64,8 @@ void Field::fread(char * name)
 	{
 		input >> x >> y;
 
+		cout << "x: " << x << endl << "y: " << y << endl;
+
 		(*this)[x][y].born();
 	}
 }

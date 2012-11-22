@@ -6,11 +6,11 @@ CXXFLAGS += -g -Wall -Wextra
 
 CELL_TESTS = CellTests
 FIELD_TESTS = FieldTests
+LIFE = Life
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h $(GTEST_DIR)/include/gtest/internal/*.h
 
-all : $(CELL_TESTS)
-# $(FIELD_TESTS)
+all : $(CELL_TESTS) $(FIELD_TESTS)
 
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
@@ -41,10 +41,13 @@ CellTests : Cell.o CellTests.o gtest_main.a
 
 
 
-FieldTests.o : $(USER_DIR)/FieldTests.cpp $(USER_DIR)/Field.h $(USER_DIR)/Field.cpp $(GTEST_HEADERS)
+Field.o : $(USER_DIR)/Field.cpp $(USER_DIR)/Field.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Field.cpp
 
-FieldTests : FieldTests.o gtest_main.a 
+FieldTests.o : $(USER_DIR)/FieldTests.cpp $(USER_DIR)/Field.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/FieldTests.cpp
+
+FieldTests : Field.o Cell.o FieldTests.o gtest_main.a 
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -lpthread -o $@
 
 
