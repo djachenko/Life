@@ -21,7 +21,7 @@ class Game
 
 		void read(char * name);
 		void tick(int n=1);
-		void dump(const string name) const;
+		void dump(const string & name);
 		void print() const;
 		void help() const;
 };

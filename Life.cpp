@@ -15,5 +15,9 @@ int main()
 		life.print();
 	}
 
+	life.tick();
+
+	life.dump("dump.txt");
+
 	return 0;
 }

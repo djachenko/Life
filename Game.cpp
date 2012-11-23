@@ -143,7 +143,7 @@ void Game::tick(int n)
 	}
 }
 
-void Game::dump(const string name) const
+void Game::dump(const string & name)
 {
 	ofstream output;
 
@@ -157,9 +157,6 @@ void Game::dump(const string name) const
 
 	for (int i=0; i<=9; i++)
 	{
-		this->rules[false][i]=this->rules[false][i];
-	    //cout << rules[false] << endl;
-/*
 		if (rules[false][i]==birth)
 		{
 			output << i;
@@ -173,7 +170,20 @@ void Game::dump(const string name) const
 		if (rules[true][i]==survival)
 		{
 			output << i;
-		}*/
+		}
+	}
+
+	output << endl;
+
+	for (int i=0; i<field.getSizeX(); i++)
+	{
+		for (int j=0; j<field.getSizeY(); j++)
+		{
+			if (field[i][j].alive())
+			{
+				output << i << ' ' << j << endl;
+			}
+		}
 	}
 }
 
