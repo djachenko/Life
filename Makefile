@@ -10,7 +10,7 @@ LIFE = Life
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h $(GTEST_DIR)/include/gtest/internal/*.h
 
-all : $(CELL_TESTS) $(FIELD_TESTS) $(LIFE)
+all : $(CELL_TESTS) $(LIFE)
 
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 

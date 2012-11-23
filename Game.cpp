@@ -47,6 +47,8 @@ void Game::realRead(istream & input)
 
 	input >> str;//#N
 
+	input.get();
+
 	getline(input,name);
 
 	cout << "name: " << name << endl;
@@ -138,6 +140,40 @@ void Game::tick(int n)
 			}
 		}
 
+	}
+}
+
+void Game::dump(const string name) const
+{
+	ofstream output;
+
+	output.open(name.c_str());
+
+	output << "#Life 1.06" << endl;
+
+	output << "#N " << name << endl;
+
+	output << "#R B";
+
+	for (int i=0; i<=9; i++)
+	{
+		this->rules[false][i]=this->rules[false][i];
+	    //cout << rules[false] << endl;
+/*
+		if (rules[false][i]==birth)
+		{
+			output << i;
+		}
+	}
+
+	output << "/S";
+
+	for (int i=0; i<=9; i++)
+	{
+		if (rules[true][i]==survival)
+		{
+			output << i;
+		}*/
 	}
 }
 

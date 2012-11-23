@@ -120,7 +120,7 @@ int Field::countNeighbours(int x, int y)
 		}
 	}
 
-	cout << "count " << x << ' ' << y << ' ' << result << endl;
+//	cout << "count " << x << ' ' << y << ' ' << result << endl;
 
 	return result;
 }
