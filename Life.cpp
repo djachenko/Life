@@ -1,7 +1,24 @@
+#include <string>
+
 #include "Game.h"
 
-int main()
+using namespace std;
+
+int main(int argc, string * args)
 {
+	string base[]={"-i", "--iterations=", "-o", "--output="};
+
+	for(int i=1; i<argc; i++)
+	{
+		for (int j=0; j<4; j++)
+		{
+			if (base[j].compare(args[i]))
+			{
+
+			}
+		}
+	}
+
 	Game life;
 
 	life.read("testGame.txt");
@@ -18,6 +35,8 @@ int main()
 	life.tick();
 
 	life.dump("dump.txt");
+
+	life.help();
 
 	return 0;
 }

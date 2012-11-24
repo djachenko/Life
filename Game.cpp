@@ -195,3 +195,18 @@ void Game::print() const
 
 	cout << endl << endl;
 }
+
+void Game::help() const
+{
+	cout << "HELP:" << endl;
+
+	cout << "1. For dumping game state into file <filename> enter \"dump <filename>\"" << endl;
+	cout << "2. For counting N iterations enter \"tick <N>\" (by default N=1)" << endl;
+	cout << "3. For help enter \"help\"" << endl;
+	cout << "4. For finishing game enter \"exit\"" << endl;
+}
+
+void Game::init(int & argc, string * args)
+{
+	for (int i=0; i<arf)
+}
