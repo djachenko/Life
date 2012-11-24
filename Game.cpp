@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <cctype>
+#include <cstdlib>
 
 #include "Game.h"
 
@@ -19,7 +22,7 @@ Game::~Game()
 {
 }
 
-void Game::read(char * name)
+void Game::read(const char * name)
 {
 	if (name)
 	{
@@ -208,5 +211,183 @@ void Game::help() const
 
 void Game::init(int & argc, string * args)
 {
-	for (int i=0; i<arf)
+	bool offline=false;
+	int iterations=0;
+	string output;
+	string input;
+
+	for (int i=1; i<argc; )
+	{
+		if (args[i].compare(0, 13, "--iterations="))
+		{
+			if (iterations)
+			{
+				throw duplicateIValue;
+			}
+
+			for (int j=13; j<args[i].length(); j++)
+			{
+				if ( isdigit( args[i][j] ) )
+				{
+					iterations=iterations*10+args[i][j]-'0';
+				}
+				else
+				{
+					throw wrongIValue;
+				}
+			}
+
+			i++;
+
+			offline=true;
+
+			continue;
+		}
+
+		if ( args[i].compare("-i") )
+		{
+			if (iterations)
+			{
+				throw duplicateIValue;
+			}
+
+			i++;
+
+			if (i==argc)
+			{
+				throw wrongIValue;
+			}
+
+			for (int j=0; j<args[i].length(); j++)
+			{
+				if ( isdigit( args[i][j] ) )
+				{
+					iterations=iterations*10+args[i][j]-'0';
+				}
+				else
+				{
+					throw wrongIValue;
+				}
+			}
+
+			i++;
+
+			offline=true;
+
+			continue;
+		}
+
+		if ( args[i].compare(0, 9, "--output=") )
+		{
+			if ( !output.empty() )
+			{
+				throw duplicateOValue;
+			}
+
+			output=args[i].substr(9);
+
+			i++;
+
+			offline = true;
+
+			continue;
+		}
+
+		if ( args[i].compare("-o") )
+		{
+			if ( !output.empty() )
+			{
+				throw duplicateOValue;
+			}
+
+			i++;
+
+			if (i==argc)
+			{
+				throw wrongOValue;
+			}
+
+			output=args[i];
+
+			i++;
+
+			offline = true;
+
+			continue;
+		}
+
+		if ( i==argc-1 )
+		{
+			input=args[i];
+		}
+		else
+		{
+			throw wrongParameter;
+		}
+	}
+
+	this->read( input.c_str() );
+
+	if (offline)
+	{
+		this->tick(iterations);
+
+		this->dump(output);
+
+		return;
+	}
+
+	this->print();
+
+	while ( 1 )
+	{
+		string command;
+
+		cin >> command;
+
+		if ( command.compare("tick") || command.compare("t") )
+		{
+			char val[256];
+
+			cin.getline(val, 256, '\n');//pot_error
+
+			string value=val;
+
+			if ( !value.empty() )
+			{
+				this->tick( atoi( value.c_str() ) );
+			}
+			else
+			{
+				this->tick();
+			}
+
+			this->print();
+
+			continue;
+		}
+
+		if ( command.compare("dump") )
+		{
+			string value;
+
+			cin >> value;
+
+			this->dump(value);
+
+			continue;
+		}
+
+		if ( command.compare("help") )
+		{
+			this->help();
+
+			continue;
+		}
+
+		if ( command.compare("exit") )
+		{
+			return;
+		}
+	}
 }

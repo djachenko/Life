@@ -6,20 +6,11 @@ using namespace std;
 
 int main(int argc, string * args)
 {
-	string base[]={"-i", "--iterations=", "-o", "--output="};
-
-	for(int i=1; i<argc; i++)
-	{
-		for (int j=0; j<4; j++)
-		{
-			if (base[j].compare(args[i]))
-			{
-
-			}
-		}
-	}
-
 	Game life;
+
+	life.init(argc, args);
+
+	return 0;
 
 	life.read("testGame.txt");
 
