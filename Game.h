@@ -1,7 +1,7 @@
 #ifndef Game_h
 #define Game_h
 
-
+#include <string>
 #include <map>
 
 #include "Field.h"
@@ -18,7 +18,7 @@ class Game
 		Game(const Game & other);
 		virtual ~Game();
 
-		void read(const char * name = NULL);
+		void read(const string & name);
 		void read(istream & input);
 
 		void tick(int n=1);

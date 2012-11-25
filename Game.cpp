@@ -26,18 +26,26 @@ Game::~Game()
 {
 }
 
-void Game::read(const char * name)
+void Game::read(const string & name)
 {
-	if (name)
+	cout << "read: " << name << ' ' << name.empty() << endl;
+
+	if ( !name.empty() )
 	{
 		ifstream input;
 
-		input.open(name);
+		input.open(name.c_str());
 
 		this->read(input);
 	}
 	else
 	{
+		cout << "Enter your game, please, in following format:" << endl;
+		cout << "1. Name of format (you may leave this line empty)" << endl;
+		cout << "2. Name of game universe" << endl;
+		cout << "3. Line with rules" << endl;
+		cout << "4. Coordinates of your cells, ended with (-1; -1)" << endl;
+
 		this->read(cin);
 	}
 }
@@ -66,6 +74,8 @@ void Game::read(istream & input)
 	{
 		c=input.get();
 
+		cout << "c: " << c << endl;
+
 		actions action;
 
 		switch (c)
@@ -81,6 +91,8 @@ void Game::read(istream & input)
 			default:
 				if (c>='0' && c<='9')
 				{
+					cout << action << ' ' << c << endl;
+
 					rules[birth!=action][c-'0']=action;
 				}
 		}
@@ -182,52 +194,60 @@ void Game::help() const
 
 void Game::init(int & argc, char ** c_args)
 {
+	cout << "init\n";
+
 	bool offline=false;
-	
+
 	int iterations=0;
 	string output;
 	string input;
 
 	vector< string > args( argc );
 
+	cout << "conv" << endl;
+
 	for (int i=0; i<argc; i++)//conversion from char *'s to strings
 	{
 		args[i]=c_args[i];
 	}
 
-	for (int i=1; i<argc; )
-	{
-		if ( 0 == args[i].compare(0, 13, "--iterations=") )
+	cout << "test1" << endl;
+
+		for (int i=1; i<argc; )
 		{
-			cout << i << " ololo " << args[i] << ' ' << args[i].compare(0, 13, "--iterations=") << endl;
+			cout << "i: " << i << endl;
 
-			if ( iterations )
+			if ( 0 == args[i].compare(0, 13, "--iterations=") )
 			{
-				throw duplicateIValue;
+				cout << i << " ololo " << args[i] << ' ' << args[i].compare(0, 13, "--iterations=") << endl;
+
+				if ( iterations )
+				{
+					throw duplicateIValue;
+				}
+
+				for (int j=13; j<args[i].length(); j++)
+				{
+					if ( isdigit( args[i][j] ) )
+					{
+						iterations=iterations*10+args[i][j]-'0';
+					}
+					else
+					{
+						throw wrongIValue;
+					}
+				}
+
+				i++;
+
+				offline=true;
+
+				cout << "iterations " << iterations << endl;
+
+				continue;
 			}
 
-			for (int j=13; j<args[i].length(); j++)
-			{
-				if ( isdigit( args[i][j] ) )
-				{
-					iterations=iterations*10+args[i][j]-'0';
-				}
-				else
-				{
-					throw wrongIValue;
-				}
-			}
-
-			i++;
-
-			offline=true;
-
-			cout << "iterations " << iterations << endl;
-
-			continue;
-		}
-
-		if ( 0 == args[i].compare("-i") )
+		sif ( 0 == args[i].compare("-i") )
 		{
 			if (iterations)
 			{
@@ -317,17 +337,21 @@ void Game::init(int & argc, char ** c_args)
 		}
 	}
 
-	this->read( input.c_str() );
+	cout << "test2" << input.c_str() << ' ' << (int)(input.c_str()) << ' ' << input.empty() << endl;
+
+	this->read( input );
+
+	cout << "test3" << endl;
 
 	if (offline)
 	{
 		if ( 0==iterations )
 		{
-			throw wrongIValue; 
+			throw wrongIValue;
 		}
 
 		if ( output.empty() )
-		{	
+		{
 			throw wrongOValue;
 		}
 

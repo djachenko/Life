@@ -44,6 +44,8 @@ void Field::read(const char * name)
 	}
 	else
 	{
+		cout << "Enter cell coordinates:" << endl;
+
 		this->read(cin);
 	}
 }
@@ -53,15 +55,9 @@ void Field::read(istream & input)
 	int x;
 	int y;
 
-	queue<int> queueX;
-	queue<int> queueY;
-
-	int minX=0;
-	int minY=0;
-
-	int maxX=0;
-	int maxY=0;
-
+//	queue<int> queueX;
+//	queue<int> queueY;
+//
 	for ( ; input.good(); )
 	{
 		input >> x >> y;
@@ -70,42 +66,22 @@ void Field::read(istream & input)
 		{
 			return;
 		}
-		
-		if (x < minX)//for hegative coordinates
-		{
-			minX = x;
-		}
 
-		if (y < minY)
-		{
-			minY = y;
-		}
-		
-		if (x > maxX)//for hegative coordinates
-		{
-			maxX = x;
-		}
+		(*this)[x][y].born();
+		(*this)[x][y].update();
 
-		if (y < maxY)
-		{
-			maxY = y;
-		}
-
-		queueX.push(x);
-		queueY.push(y);
+//		queueX.push(x);
+//		queueY.push(y);
 	}
 
-	int X = this->getSizeX();
-	int Y = this->getSizeY();
-
-	for ( ; !queueX.empty(); )
-	{
-		(*this)[ queueX.front() ][ queueY.front() ].born();
-		(*this)[ queueX.front() ][ queueY.front() ].update();
-
-		queueX.pop();
-		queueY.pop();
-	}
+//	for ( ; !queueX.empty(); )
+//	{
+//		(*this)[ queueX.front() ][ queueY.front() ].born();
+//		(*this)[ queueX.front() ][ queueY.front() ].update();
+//
+//		queueX.pop();
+//		queueY.pop();
+//	}
 }
 
 void Field::print() const
