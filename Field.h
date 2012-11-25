@@ -15,7 +15,8 @@ class Field
 		int sizeX;
 		int sizeY;
 	public:
-		Field(int x=0, int y=0);
+		Field();
+		Field(int x, int y);
 		Field(const Field & other);
 		virtual ~Field();
 
@@ -23,7 +24,7 @@ class Field
 		const vector<Cell> & operator[](int i) const;
 
 		void read(const char * name=NULL);
-		void fread(istream & input);
+		void read(istream & input);
 		void print() const;
 
 		int getSizeX() const;
@@ -32,6 +33,8 @@ class Field
 		int countNeighbours(int x, int y);
 
 		void resize(const int newX, const int newY);
+
+		void update();
 };
 
 #endif //Field_h

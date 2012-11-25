@@ -12,20 +12,21 @@ class Game
 		Field field;
 		std::map<bool, std::map<int, actions> > rules;
 		std::string name;
-
-		void realRead(istream & input);
 	public:
 		Game();
+		Game(int x, int y);
 		Game(const Game & other);
 		virtual ~Game();
 
 		void read(const char * name = NULL);
+		void read(istream & input);
+
 		void tick(int n=1);
 		void dump(const string & name);
 		void print() const;
 		void help() const;
 
-		void init(int & argc, string * args);
+		void init(int & argc, char ** args);
 };
 
 enum GameExceptions
@@ -35,6 +36,7 @@ enum GameExceptions
 	wrongOValue,//wrong value of -o or --output parameter key
 	duplicateOValue,//redefinition
 	wrongParameter,//not last parameter is not a key
+
 };
 
 #endif //Game_h

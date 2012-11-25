@@ -9,7 +9,11 @@
 using namespace std;
 
 Game::Game()
-:field(3,3)
+{
+}
+
+Game::Game(int x, int y)
+:field(x, y)
 {
 }
 
@@ -30,21 +34,19 @@ void Game::read(const char * name)
 
 		input.open(name);
 
-		this->realRead(input);
+		this->read(input);
 	}
 	else
 	{
-		this->realRead(cin);
+		this->read(cin);
 	}
 }
 
-void Game::realRead(istream & input)
+void Game::read(istream & input)
 {
 	string str;
 
 	getline(input, str);//descriptor
-
-	cout << "str: " << str << endl;
 
 //NAME
 
@@ -54,17 +56,11 @@ void Game::realRead(istream & input)
 
 	getline(input,name);
 
-	cout << "name: " << name << endl;
-
 	input >> str;//#R
 
 //RULES
 
 	char c;
-
-	cout << "birth: " << birth << endl;
-	cout << "survival: " << survival << endl;
-	cout << "death: " << death << endl;
 
 	for ( ; c!='\n'; )
 	{
@@ -86,63 +82,42 @@ void Game::realRead(istream & input)
 				if (c>='0' && c<='9')
 				{
 					rules[birth!=action][c-'0']=action;
-					cout << "c: " << c << ", action: " << rules[birth!=action][c-'0'] << endl;
 				}
 		}
 	}
 
-	map<int, actions>::iterator it;
 
 	for (int i=0; i<=9; i++)
 	{
-		if (rules[false].find(i)==rules[false].end())
+		if ( rules[false].find(i) == rules[false].end() )
 		{
-			rules[false][i]=death;
+			rules[false][i] = death;
 		}
 
-		if (rules[true].find(i)==rules[true].end())
+		if ( rules[true].find(i) == rules[true].end() )
 		{
-			rules[true][i]=death;
+			rules[true][i] = death;
 		}
 	}
 
 //FIELD
 
-	field.fread(input);
-
-	for (int i=0; i<field.getSizeX(); i++)
-	{
-		for (int j=0; j<field.getSizeY(); j++)
-		{
-			field[i][j].update();
-		}
-	}
+	field.read(input);
 }
 
 void Game::tick(int n)
 {
 	for ( ; n; n--)
 	{
-//		cout << "n: " << n << endl;
-
 		for (int i=0; i<field.getSizeX(); i++)
 		{
 			for (int j=0; j<field.getSizeY(); j++)
 			{
-	//			cout << i << ' ' << j << endl;
-
 				field[i][j].changeState( rules[ field[i][j].alive() ][ field.countNeighbours(i, j) ] );
 			}
 		}
 
-		for (int i=0; i<field.getSizeX(); i++)
-		{
-			for (int j=0; j<field.getSizeY(); j++)
-			{
-				field[i][j].update();
-			}
-		}
-
+		field.update();
 	}
 }
 
@@ -192,11 +167,7 @@ void Game::dump(const string & name)
 
 void Game::print() const
 {
-	cout << name << endl;
-
 	field.print();
-
-	cout << endl << endl;
 }
 
 void Game::help() const
@@ -209,18 +180,28 @@ void Game::help() const
 	cout << "4. For finishing game enter \"exit\"" << endl;
 }
 
-void Game::init(int & argc, string * args)
+void Game::init(int & argc, char ** c_args)
 {
 	bool offline=false;
+	
 	int iterations=0;
 	string output;
 	string input;
 
+	vector< string > args( argc );
+
+	for (int i=0; i<argc; i++)//conversion from char *'s to strings
+	{
+		args[i]=c_args[i];
+	}
+
 	for (int i=1; i<argc; )
 	{
-		if (args[i].compare(0, 13, "--iterations="))
+		if ( 0 == args[i].compare(0, 13, "--iterations=") )
 		{
-			if (iterations)
+			cout << i << " ololo " << args[i] << ' ' << args[i].compare(0, 13, "--iterations=") << endl;
+
+			if ( iterations )
 			{
 				throw duplicateIValue;
 			}
@@ -241,10 +222,12 @@ void Game::init(int & argc, string * args)
 
 			offline=true;
 
+			cout << "iterations " << iterations << endl;
+
 			continue;
 		}
 
-		if ( args[i].compare("-i") )
+		if ( 0 == args[i].compare("-i") )
 		{
 			if (iterations)
 			{
@@ -272,12 +255,14 @@ void Game::init(int & argc, string * args)
 
 			i++;
 
+			cout << "i " << iterations << endl;
+
 			offline=true;
 
 			continue;
 		}
 
-		if ( args[i].compare(0, 9, "--output=") )
+		if ( 0 == args[i].compare(0, 9, "--output=") )
 		{
 			if ( !output.empty() )
 			{
@@ -290,10 +275,12 @@ void Game::init(int & argc, string * args)
 
 			offline = true;
 
+			cout << "output " << output << endl;
+
 			continue;
 		}
 
-		if ( args[i].compare("-o") )
+		if ( 0 == args[i].compare("-o") )
 		{
 			if ( !output.empty() )
 			{
@@ -313,12 +300,16 @@ void Game::init(int & argc, string * args)
 
 			offline = true;
 
+			cout << "o" << output << endl;
+
 			continue;
 		}
 
 		if ( i==argc-1 )
 		{
 			input=args[i];
+
+			i++;
 		}
 		else
 		{
@@ -330,6 +321,16 @@ void Game::init(int & argc, string * args)
 
 	if (offline)
 	{
+		if ( 0==iterations )
+		{
+			throw wrongIValue; 
+		}
+
+		if ( output.empty() )
+		{	
+			throw wrongOValue;
+		}
+
 		this->tick(iterations);
 
 		this->dump(output);
@@ -343,9 +344,11 @@ void Game::init(int & argc, string * args)
 	{
 		string command;
 
+		cout << "> ";
+
 		cin >> command;
 
-		if ( command.compare("tick") || command.compare("t") )
+		if ( !command.compare("tick") || !command.compare("t") )
 		{
 			char val[256];
 
@@ -367,7 +370,7 @@ void Game::init(int & argc, string * args)
 			continue;
 		}
 
-		if ( command.compare("dump") )
+		if ( !command.compare("dump") )
 		{
 			string value;
 
@@ -378,16 +381,18 @@ void Game::init(int & argc, string * args)
 			continue;
 		}
 
-		if ( command.compare("help") )
+		if ( !command.compare("help") )
 		{
 			this->help();
 
 			continue;
 		}
 
-		if ( command.compare("exit") )
+		if ( !command.compare("exit") )
 		{
 			return;
 		}
+
+		cout << "Unknown command" << endl;
 	}
 }
