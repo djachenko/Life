@@ -1,12 +1,19 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <cctype>
+#include <cstdlib>
 
 #include "Game.h"
 
 using namespace std;
 
 Game::Game()
-:field(3,3)
+{
+}
+
+Game::Game(int x, int y)
+:field(x, y)
 {
 }
 
@@ -19,29 +26,33 @@ Game::~Game()
 {
 }
 
-void Game::read(char * name)
+void Game::read(const string & name)
 {
-	if (name)
+	if ( !name.empty() )
 	{
 		ifstream input;
 
-		input.open(name);
+		input.open(name.c_str());
 
-		this->realRead(input);
+		this->read(input);
 	}
 	else
 	{
-		this->realRead(cin);
+		cout << "Enter your game, please, in following format:" << endl;
+		cout << "1. Name of format (you may leave this line empty)" << endl;
+		cout << "2. Name of game universe" << endl;
+		cout << "3. Line with rules" << endl;
+		cout << "4. Coordinates of your cells, ended with (-1; -1)" << endl;
+
+		this->read(cin);
 	}
 }
 
-void Game::realRead(istream & input)
+void Game::read(istream & input)
 {
 	string str;
 
 	getline(input, str);//descriptor
-
-	cout << "str: " << str << endl;
 
 //NAME
 
@@ -51,17 +62,17 @@ void Game::realRead(istream & input)
 
 	getline(input,name);
 
-	cout << "name: " << name << endl;
-
 	input >> str;//#R
 
 //RULES
 
-	char c;
+	for (int i=0; i<=9; i++)
+	{
+		rules[false][i] = survival;
+		rules[true][i] = death;
+	}
 
-	cout << "birth: " << birth << endl;
-	cout << "survival: " << survival << endl;
-	cout << "death: " << death << endl;
+	char c;
 
 	for ( ; c!='\n'; )
 	{
@@ -83,67 +94,32 @@ void Game::realRead(istream & input)
 				if (c>='0' && c<='9')
 				{
 					rules[birth!=action][c-'0']=action;
-					cout << "c: " << c << ", action: " << rules[birth!=action][c-'0'] << endl;
 				}
-		}
-	}
-
-	map<int, actions>::iterator it;
-
-	for (int i=0; i<=9; i++)
-	{
-		if (rules[false].find(i)==rules[false].end())
-		{
-			rules[false][i]=death;
-		}
-
-		if (rules[true].find(i)==rules[true].end())
-		{
-			rules[true][i]=death;
 		}
 	}
 
 //FIELD
 
-	field.fread(input);
-
-	for (int i=0; i<field.getSizeX(); i++)
-	{
-		for (int j=0; j<field.getSizeY(); j++)
-		{
-			field[i][j].update();
-		}
-	}
+	field.read(input);
 }
 
 void Game::tick(int n)
 {
 	for ( ; n; n--)
 	{
-//		cout << "n: " << n << endl;
-
 		for (int i=0; i<field.getSizeX(); i++)
 		{
 			for (int j=0; j<field.getSizeY(); j++)
 			{
-	//			cout << i << ' ' << j << endl;
-
 				field[i][j].changeState( rules[ field[i][j].alive() ][ field.countNeighbours(i, j) ] );
 			}
 		}
 
-		for (int i=0; i<field.getSizeX(); i++)
-		{
-			for (int j=0; j<field.getSizeY(); j++)
-			{
-				field[i][j].update();
-			}
-		}
-
+		field.update();
 	}
 }
 
-void Game::dump(const string name) const
+void Game::dump(const string & name)
 {
 	ofstream output;
 
@@ -157,9 +133,6 @@ void Game::dump(const string name) const
 
 	for (int i=0; i<=9; i++)
 	{
-		this->rules[false][i]=this->rules[false][i];
-	    //cout << rules[false] << endl;
-/*
 		if (rules[false][i]==birth)
 		{
 			output << i;
@@ -173,15 +146,274 @@ void Game::dump(const string name) const
 		if (rules[true][i]==survival)
 		{
 			output << i;
-		}*/
+		}
+	}
+
+	output << endl;
+
+	for (int i=0; i<field.getSizeX(); i++)
+	{
+		for (int j=0; j<field.getSizeY(); j++)
+		{
+			if (field[i][j].alive())
+			{
+				output << i << ' ' << j << endl;
+			}
+		}
 	}
 }
 
 void Game::print() const
 {
-	cout << name << endl;
-
 	field.print();
+}
 
-	cout << endl << endl;
+void Game::help() const
+{
+	cout << "HELP:" << endl;
+
+	cout << "1. For dumping game state into file <filename> enter \"dump <filename>\"" << endl;
+	cout << "2. For counting N iterations enter \"tick <N>\" (by default N=1)" << endl;
+	cout << "3. For help enter \"help\"" << endl;
+	cout << "4. For finishing game enter \"exit\"" << endl;
+}
+
+void Game::init(int & argc, char ** c_args)
+{
+	bool offline=false;
+
+	int iterations=0;
+	string output;
+	string input;
+
+	vector< string > args( argc );
+
+	for (int i=0; i<argc; i++)//conversion from char *'s to strings
+	{
+		args[i]=c_args[i];
+	}
+
+	try
+	{
+		for (int i=1; i<argc; )
+		{
+			if ( 0 == args[i].compare(0, 13, "--iterations=") )
+			{
+				if ( iterations )
+				{
+					throw duplicateIValue;
+				}
+
+				for (int j=13; j<args[i].length(); j++)
+				{
+					if ( isdigit( args[i][j] ) )
+					{
+						iterations=iterations*10+args[i][j]-'0';
+					}
+					else
+					{
+						throw wrongIValue;
+					}
+				}
+
+				i++;
+
+				offline=true;
+
+				continue;
+			}
+
+			if ( 0 == args[i].compare("-i") )
+			{
+				if (iterations)
+				{
+				throw duplicateIValue;
+				}
+
+				i++;
+
+				if (i==argc)
+				{
+					throw wrongIValue;
+				}
+
+				for (int j=0; j<args[i].length(); j++)
+				{
+					if ( isdigit( args[i][j] ) )
+					{
+						iterations=iterations*10+args[i][j]-'0';
+					}
+					else
+					{
+						throw wrongIValue;
+					}
+				}
+
+				i++;
+
+				offline=true;
+
+				continue;
+			}
+
+			if ( 0 == args[i].compare(0, 9, "--output=") )
+			{
+				if ( !output.empty() )
+				{
+					throw duplicateOValue;
+				}
+
+				output=args[i].substr(9);
+
+				i++;
+
+				offline = true;
+
+				continue;
+			}
+
+			if ( 0 == args[i].compare("-o") )
+			{
+				if ( !output.empty() )
+				{
+					throw duplicateOValue;
+				}
+
+				i++;
+
+				if (i==argc)
+				{
+					throw wrongOValue;
+				}
+
+				output=args[i];
+
+				i++;
+
+				offline = true;
+
+				continue;
+			}
+
+			if ( i==argc-1 )
+			{
+				input=args[i];
+
+				i++;
+			}
+			else
+			{
+				throw wrongParameter;
+			}
+		}
+
+		this->read( input );
+
+		if (offline)
+		{
+			if ( 0==iterations )
+			{
+				throw wrongIValue;
+			}
+
+			if ( output.empty() )
+			{
+				throw wrongOValue;
+			}
+
+			this->tick(iterations);
+
+			this->dump(output);
+
+			return;
+		}
+	}
+	catch (GameExceptions excptn)
+	{
+		switch (excptn)
+		{
+			case wrongIValue:
+				cout << "Wrong iteration parameter." << endl;
+
+				break;
+			case duplicateIValue:
+				cout << "Iteration parameter should be defined only once" << endl;
+
+				break;
+			case wrongOValue:
+				cout << "Wrong output file name." << endl;
+
+				break;
+			case duplicateOValue:
+				cout << "Output file should be defined only once" << endl;
+
+				break;
+			case wrongParameter:
+				cout << "This program doesn't know such parameters. Call your language teacher, system administrator or psychiatrist - only in this order." << endl;
+
+				break;
+			default:
+				cout << "WTF?!!" << endl;
+		}
+
+		return;
+	}
+
+	this->print();
+
+	while ( 1 )
+	{
+		string command;
+
+		cout << "> ";
+
+		cin >> command;
+
+		if ( !command.compare("tick") || !command.compare("t") )
+		{
+			char val[256];
+
+			cin.getline(val, 256, '\n');//pot_error
+
+			string value=val;
+
+			if ( !value.empty() )
+			{
+				this->tick( atoi( value.c_str() ) );
+			}
+			else
+			{
+				this->tick();
+			}
+
+			this->print();
+
+			continue;
+		}
+
+		if ( !command.compare("dump") )
+		{
+			string value;
+
+			cin >> value;
+
+			this->dump(value);
+
+			continue;
+		}
+
+		if ( !command.compare("help") )
+		{
+			this->help();
+
+			continue;
+		}
+
+		if ( !command.compare("exit") )
+		{
+			return;
+		}
+
+		cout << "Unknown command" << endl;
+	}
 }

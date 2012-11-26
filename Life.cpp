@@ -1,19 +1,14 @@
+#include <string>
+
 #include "Game.h"
 
-int main()
+using namespace std;
+
+int main(int argc, char ** args)
 {
-	Game life;
+	Game life(25, 25);
 
-	life.read("testGame.txt");
-
-	life.print();
-
-	for (int i=0; i<5; i++)
-	{
-		life.tick();
-
-		life.print();
-	}
+	life.init(argc, args);
 
 	return 0;
 }

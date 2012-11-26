@@ -50,12 +50,6 @@ bool Cell::dead() const
 
 void Cell::print() const
 {
-	//cout << "Cell::print()" << endl;
-
-	cout << this->getState();
-
-	return;
-
 	if (this->alive())
 	{
 		cout << "X";
@@ -76,14 +70,12 @@ void Cell::changeState(const actions action)
 	switch (action)
 	{
 		case birth:
-//			cout << "birth" << endl;
-
 			this->born();
+
 			break;
 		case death:
-//			cout << "death X_X" << endl;
-
 			this->die();
+
 			break;
 	}
 }

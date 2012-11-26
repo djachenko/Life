@@ -1,7 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <queue>
 
 #include "Field.h"
+
+Field::Field()
+{
+}
 
 Field::Field(int x, int y)
 :table(x, vector<Cell>(y) ), sizeX(x), sizeY(y)
@@ -29,31 +34,23 @@ const vector<Cell> & Field::operator[](int i) const
 
 void Field::read(const char * name)
 {
-	//cout << "read" << endl;
-
 	if (name)
 	{
 		ifstream input;
 
 		input.open(name);
 
-		this->fread(input);
+		this->read(input);
 	}
 	else
 	{
-		this->fread(cin);
-	}
+		cout << "Enter cell coordinates:" << endl;
 
-	for (int i=0; i<sizeX; i++)
-	{
-		for (int j=0; j<sizeY; j++)
-		{
-			(*this)[i][j].update();
-		}
+		this->read(cin);
 	}
 }
 
-void Field::fread(istream & input)
+void Field::read(istream & input)
 {
 	int x;
 	int y;
@@ -67,16 +64,13 @@ void Field::fread(istream & input)
 			return;
 		}
 
-//		cout << "x: " << x << endl << "y: " << y << endl;
-
-		(*this)[x][y].born();
+		(*this)[ x % sizeX ][ y % sizeY ].born();
+		(*this)[ x % sizeX ][ y % sizeY ].update();
 	}
 }
 
 void Field::print() const
 {
-	//cout << "Field::print()" << endl;
-
 	for(int i=0; i<sizeX; i++)
 	{
 		for (int j=0; j<sizeY; j++)
@@ -113,14 +107,10 @@ int Field::countNeighbours(int x, int y)
 
 			if ( (*this)[ ( x + i + sizeX ) % sizeX ][ ( y + j + sizeY ) % sizeY ].alive())
 			{
-//				cout << "++ " << ( x + i + sizeX ) % sizeX << ' ' << ( y + j + sizeY ) % sizeY << endl;
-//				cout << x+i << ' ' << y+j << '|' << x+i+sizeX << ' ' << y+j+sizeY << endl;
 				result++;
 			}
 		}
 	}
-
-//	cout << "count " << x << ' ' << y << ' ' << result << endl;
 
 	return result;
 }
@@ -136,4 +126,15 @@ void Field::resize(const int newX, const int newY)
 
 	sizeX=newX;
 	sizeY=newY;
+}
+
+void Field::update()
+{
+	for (int i=0; i < this->getSizeX(); i++)
+	{
+		for (int j=0; j < this->getSizeY(); j++)
+		{
+			(*this)[i][j].update();
+		}
+	}
 }
