@@ -98,6 +98,7 @@ void Game::read(istream & input)
 		}
 	}
 
+	cout << name << endl;
 //FIELD
 
 	field.read(input);

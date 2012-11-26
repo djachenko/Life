@@ -55,17 +55,37 @@ void Field::read(istream & input)
 	int x;
 	int y;
 
+	queue<int> queueX;
+	queue<int> queueY;
+
+	int minX=0;
+	int minY=0;
+
 	for ( ; input.good(); )
 	{
 		input >> x >> y;
 
-		if (-1==x && -1==y)
+		if ( x < minX )
 		{
-			return;
+			minX = x;
 		}
 
-		(*this)[ x % sizeX ][ y % sizeY ].born();
-		(*this)[ x % sizeX ][ y % sizeY ].update();
+		if ( y < minY )
+		{
+			minY = y;
+		}
+
+		queueX.push(x);
+		queueY.push(y);
+	}
+
+	for ( ; !queueX.empty() ; )
+	{
+		(*this)[ queueX.front() - minX ][ queueY.front() - minY ].born();
+		(*this)[ queueX.front() - minX ][ queueY.front() - minY ].update();
+
+		queueX.pop();
+		queueY.pop();
 	}
 }
 

@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char ** args)
 {
-	Game life(25, 25);
+	Game life(40, 25);
 
 	life.init(argc, args);
 
