@@ -91,9 +91,9 @@ void Field::read(istream & input)
 
 void Field::print() const
 {
-	for(int i=0; i<sizeX; i++)
+	for (int j=0; j<sizeY; j++)
 	{
-		for (int j=0; j<sizeY; j++)
+		for(int i=0; i<sizeX; i++)
 		{
 			(*this)[i][j].print();
 		}

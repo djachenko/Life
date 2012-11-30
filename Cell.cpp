@@ -56,7 +56,7 @@ void Cell::print() const
 	}
 	else
 	{
-		cout << "O";
+		cout << " ";
 	}
 }
 

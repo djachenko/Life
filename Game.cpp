@@ -366,7 +366,17 @@ void Game::init(int & argc, char ** c_args)
 	{
 		string command;
 
+		while (1)
+		{
 		cout << "> ";
+
+		cin.get();
+
+		tick();
+
+		print();
+
+		}
 
 		cin >> command;
 
