@@ -39,7 +39,7 @@ void Game::read(const string & name)
 	{
 		ifstream baseList;
 
-		baseList.open("Life.conf");
+		baseList.open("Life.config");
 
 		vector<string> bases;
 
@@ -381,18 +381,8 @@ void Game::init(int & argc, char ** c_args)
 	while ( 1 )
 	{
 		string command;
-
-		while (1)
-		{
+	
 		cout << "> ";
-
-		cin.get();
-
-		tick();
-
-		print();
-
-		}
 
 		cin >> command;
 
