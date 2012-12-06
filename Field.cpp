@@ -42,12 +42,6 @@ void Field::read(const char * name)
 
 		this->read(input);
 	}
-	else
-	{
-		cout << "Enter cell coordinates:" << endl;
-
-		this->read(cin);
-	}
 }
 
 void Field::read(istream & input)

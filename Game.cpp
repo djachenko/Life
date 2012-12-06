@@ -3,6 +3,7 @@
 #include <string>
 #include <cctype>
 #include <cstdlib>
+#include <ctime>
 
 #include "Game.h"
 
@@ -28,24 +29,39 @@ Game::~Game()
 
 void Game::read(const string & name)
 {
+	ifstream input;
+
 	if ( !name.empty() )
 	{
-		ifstream input;
-
 		input.open(name.c_str());
-
-		this->read(input);
 	}
 	else
 	{
-		cout << "Enter your game, please, in following format:" << endl;
-		cout << "1. Name of format (you may leave this line empty)" << endl;
-		cout << "2. Name of game universe" << endl;
-		cout << "3. Line with rules" << endl;
-		cout << "4. Coordinates of your cells, ended with (-1; -1)" << endl;
+		ifstream baseList;
 
-		this->read(cin);
+		baseList.open("Life.conf");
+
+		vector<string> bases;
+
+		string name;
+
+		cout << "base " <<  endl;
+
+		for ( ; baseList.good(); )
+		{
+			baseList >> name;
+
+			cout << "name: " << name << endl;
+
+			bases.push_back(name);
+		}
+
+		srand( time(NULL) );
+
+		input.open( bases[ rand() % bases.size() ].c_str() );
 	}
+
+	read(input);
 }
 
 void Game::read(istream & input)
